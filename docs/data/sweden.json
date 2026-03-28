@@ -1,0 +1,114 @@
+{
+  "id": "sweden",
+  "name": "Sweden",
+  "currency": "SEK",
+  "year": 2025,
+  "typicalSweSalary": 780000,
+  "priceBaseAmount": 58800,
+  "defaultMunicipalRate": 0.3060,
+  "deceptionType": "employer_side",
+  "deceptionLabel": "The 31.42% Uncapped Employer Contribution",
+
+  "layers": [
+    {
+      "id": "grundavdrag",
+      "label": "Basic Deduction (Grundavdrag)",
+      "pass": 1,
+      "side": "employee",
+      "type": "income_deduction_formula",
+      "tiers": [
+        { "incomeUpTo": 40096,  "formula": "0.423 * income" },
+        { "incomeUpTo": 135240, "formula": "16952 + 0.20 * (income - 40096)" },
+        { "incomeUpTo": 370440, "deduction": 35981 },
+        { "incomeUpTo": 461040, "formula": "35981 - 0.10 * (income - 370440)" },
+        { "incomeUpTo": null,   "formula": "max(17234, 35981 - 0.10 * (income - 370440))" }
+      ]
+    },
+    {
+      "id": "municipal_tax",
+      "label": "Municipal Tax (Kommunalskatt)",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat_on_taxable",
+      "rate": 0.3060,
+      "appliesTo": "income_minus_grundavdrag"
+    },
+    {
+      "id": "state_tax",
+      "label": "State Income Tax (Statlig Skatt)",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat_above_threshold",
+      "rate": 0.20,
+      "threshold": 625800
+    },
+    {
+      "id": "jobbskatteavdrag",
+      "label": "Employment Tax Credit (Jobbskatteavdrag)",
+      "pass": 1,
+      "side": "employee",
+      "type": "formula_credit",
+      "appliesAgainst": "municipal_tax_only",
+      "pbb": 58800,
+      "phaseOutAbolished": true,
+      "formulaTiers": [
+        {
+          "incomeFrom": 0,
+          "incomeTo": 53508,
+          "formula": "0.3294 * (income - grundavdrag) * municipalRate"
+        },
+        {
+          "incomeFrom": 53508,
+          "incomeTo": 189540,
+          "formula": "(0.2832 * PBB + 0.3294 * (income - 0.91 * PBB)) * municipalRate"
+        },
+        {
+          "incomeFrom": 189540,
+          "incomeTo": null,
+          "formula": "2.608 * PBB * municipalRate"
+        }
+      ]
+    },
+    {
+      "id": "pension_fee",
+      "label": "General Pension Fee (Allmän Pensionsavgift)",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat_with_cap",
+      "rate": 0.07,
+      "maxAmount": 45500
+    },
+    {
+      "id": "public_service_fee",
+      "label": "Public Service Fee",
+      "pass": 1,
+      "side": "employee",
+      "type": "stepped_flat",
+      "steps": [
+        { "incomeUpTo": 129930, "formula": "0.01 * income" },
+        { "incomeUpTo": null,   "amount": 1249 }
+      ]
+    },
+    {
+      "id": "arbetsgivaravgift",
+      "label": "Employer Social Contributions (Arbetsgivaravgift) 💀",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat",
+      "rate": 0.3142,
+      "cap": null,
+      "appliesTo": "gross_salary",
+      "note": "31.42% of gross, NO CAP. Not on payslip, but this is what you ACTUALLY cost your employer.",
+      "breakdown": [
+        { "label": "Old age pension",       "rate": 0.1021 },
+        { "label": "Survivor's pension",    "rate": 0.0060 },
+        { "label": "Sickness insurance",    "rate": 0.0315 },
+        { "label": "Parental insurance",    "rate": 0.0263 },
+        { "label": "Work injury insurance", "rate": 0.0020 },
+        { "label": "Labour market fee",     "rate": 0.0231 },
+        { "label": "General salary tax",    "rate": 0.1124 },
+        { "label": "Other",                 "rate": 0.0108 }
+      ]
+    }
+  ]
+}

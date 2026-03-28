@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Tax Rate You See Isn't the Tax Rate You Pay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════ [1] HERO ═══════════════ -->
+<section class="hero section visible" id="hero">
+  <div class="hero-bg"><canvas id="hero-canvas"></canvas></div>
+  <h1>The Tax Rate You See Isn't the Tax Rate You Pay</h1>
+  <p class="subtitle">An interactive exploration of how governments collect more than what the tax brackets say</p>
+  <div class="scroll-arrow" id="scroll-arrow">↓</div>
+</section>
+
+<!-- ═══════════════ [2] INTRO — What Is Tax Deception? ═══════════════ -->
+<section class="section" id="intro">
+  <div class="prose">
+    <p>When a politician says <em>"the top income tax rate is 33%"</em>, they are technically correct — and practically misleading.</p>
+    <p>In most countries, income tax is only one of several mandatory deductions taken from your earnings. Governments layer on <strong>social contributions</strong>, <strong>health levies</strong>, <strong>pension premiums</strong>, and <strong>surtaxes</strong> — each with its own rates, ceilings, and rules — none of which appear in the headline bracket table.</p>
+    <p>Then there is a second layer of invisibility: your <strong>employer's contributions</strong>. For every dollar you earn, your employer is legally required to pay an additional percentage directly to the government — money that was budgeted for your salary but never appears on your payslip.</p>
+    <p>This visualization walks through real countries and real numbers to show the gap between what tax brackets suggest and what actually happens.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ [3] INTRO ANIMATION A — Employee-Side ═══════════════ -->
+<section class="section concept-section" id="intro-anim-a">
+  <div class="sticky-label">Concept: Employee-Side Deception</div>
+  <button class="replay-btn" data-target="intro-anim-a" title="Replay">↺</button>
+  <div class="viz-container" id="intro-a-viz"></div>
+  <div class="anim-step-text" id="intro-a-text"></div>
+</section>
+
+<!-- ═══════════════ [4] INTRO ANIMATION B — Employer-Side ═══════════════ -->
+<section class="section concept-section" id="intro-anim-b">
+  <div class="sticky-label">Concept: Employer-Side Deception</div>
+  <button class="replay-btn" data-target="intro-anim-b" title="Replay">↺</button>
+  <div class="viz-container" id="intro-b-viz"></div>
+  <div class="anim-step-text" id="intro-b-text"></div>
+</section>
+
+<!-- ═══════════════ [5] COUNTRY: Ontario ═══════════════ -->
+<section class="section country-section" id="ontario-section">
+  <h2 class="section-header">Ontario, Canada — The Hidden Surtax</h2>
+  <div class="prose">
+    <p>Ontario residents are familiar with the combined federal + provincial income tax system. The top combined rate is often cited as "around 53%". But even mid-range earners encounter something that doesn't appear in any bracket table: the <strong>Ontario Surtax</strong> — an additional tax calculated not on your income, but on your provincial income tax owing. Once your provincial tax exceeds a threshold, an extra 20% is added. Exceed a second threshold, and another 36% stacks on top. The result: an effective rate that surprises anyone who calculated it from the bracket tables alone.</p>
+  </div>
+  <button class="replay-btn" data-target="ontario-section" title="Replay">↺</button>
+  <div id="ontario-input"></div>
+  <div class="viz-container" id="ontario-viz"></div>
+  <div id="ontario-summary"></div>
+  <div class="callout" id="ontario-callout"></div>
+  <div class="data-source">Sources: Canada Revenue Agency 2025, Ontario Ministry of Finance</div>
+  <div class="next-arrow" id="ontario-next"><a href="#ireland-section">Continue ↓</a></div>
+</section>
+
+<!-- ═══════════════ [6] COUNTRY: Ireland ═══════════════ -->
+<section class="section country-section" id="ireland-section">
+  <h2 class="section-header">Ireland — Three Taxes, One Payslip</h2>
+  <div class="prose">
+    <p>Ireland's income tax is simple on the surface: 20% up to a threshold, 40% above. But Irish workers actually pay three completely separate taxes on every payslip. The <strong>Universal Social Charge (USC)</strong> is an entirely independent levy with its own bands — and critically, the tax credits that reduce your income tax bill provide <strong>zero relief</strong> against USC. Then there's <strong>PRSI</strong>, a flat social insurance contribution. By the time all three are calculated, a higher-earning Irish worker faces a marginal rate of over 52%.</p>
+  </div>
+  <button class="replay-btn" data-target="ireland-section" title="Replay">↺</button>
+  <div id="ireland-input"></div>
+  <div class="viz-container" id="ireland-viz"></div>
+  <div id="ireland-summary"></div>
+  <div class="callout" id="ireland-callout"></div>
+  <div class="data-source">Sources: Revenue.ie 2025, PwC Ireland Tax Summary</div>
+  <div class="next-arrow" id="ireland-next"><a href="#employer-transition">Continue ↓</a></div>
+</section>
+
+<!-- ═══════════════ [7] EMPLOYER-SIDE TRANSITION ═══════════════ -->
+<section class="section transition-section" id="employer-transition">
+  <div class="prose">
+    <p>So far, we've looked at what comes out of <em>your</em> payslip. But there is a second layer that most workers never see.</p>
+    <p>When an employer hires you at a salary of €50,000, the cost to that employer is not €50,000. The state requires employers to pay a percentage of your salary directly to social funds — pension insurance, health insurance, unemployment insurance — on top of your gross pay. This money was earmarked for your compensation. You just never see it.</p>
+    <p>Some countries cap these contributions at a ceiling. Others apply them to every euro of salary, without limit. The countries below represent the spectrum.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ [8] COUNTRY: Sweden ═══════════════ -->
+<section class="section country-section" id="sweden-section">
+  <h2 class="section-header">Sweden — The Uncapped 31.42%</h2>
+  <div class="prose">
+    <p>Sweden is famous for high income tax rates. But the income tax — while genuinely high — is partially offset by the <strong>jobbskatteavdrag</strong>, a substantial employment tax credit. What is rarely discussed is what happens before you even receive your salary. Swedish employers pay <strong>31.42% of gross salary</strong> in social contributions — on every single krona, with no ceiling. An employee earning 780,000 SEK per year costs their employer over 1 million SEK.</p>
+  </div>
+  <button class="replay-btn" data-target="sweden-section" title="Replay">↺</button>
+  <div id="sweden-input"></div>
+  <div class="viz-container" id="sweden-viz"></div>
+  <div id="sweden-summary"></div>
+  <div class="callout" id="sweden-callout"></div>
+  <div id="sweden-breakdown-wrap"></div>
+  <div class="data-source">Sources: Skatteverket 2025, Swedish Tax Agency</div>
+  <div class="next-arrow" id="sweden-next"><a href="#estonia-section">Continue ↓</a></div>
+</section>
+
+<!-- ═══════════════ [9] COUNTRY: Estonia ═══════════════ -->
+<section class="section country-section" id="estonia-section">
+  <h2 class="section-header">Estonia — The 'Simple Flat Tax' That Costs 33.8% Extra</h2>
+  <div class="prose">
+    <p>Estonia is consistently cited as a model of tax simplicity: a flat 22% income tax rate, no brackets, no complexity. That reputation is earned — for the employee. But employers in Estonia pay <strong>33% social tax plus 0.8% unemployment insurance</strong> on top of every euro of gross salary. No cap. A flat-tax haven for the employee is a 33.8% payroll tax burden for the employer.</p>
+  </div>
+  <button class="replay-btn" data-target="estonia-section" title="Replay">↺</button>
+  <div id="estonia-input"></div>
+  <div class="viz-container" id="estonia-viz"></div>
+  <div id="estonia-summary"></div>
+  <div class="callout" id="estonia-callout"></div>
+  <div class="data-source">Sources: Estonian Tax and Customs Board 2025</div>
+  <div class="next-arrow" id="estonia-next"><a href="#hungary-section">Continue ↓</a></div>
+</section>
+
+<!-- ═══════════════ [10] COUNTRY: Hungary ═══════════════ -->
+<section class="section country-section" id="hungary-section">
+  <h2 class="section-header">Hungary — 15% Flat Tax, 33.5% Employee Reality</h2>
+  <div class="prose">
+    <p>Hungary's 15% flat income tax rate is one of the lowest in Europe. But it comes with a companion: a <strong>mandatory 18.5% social security contribution</strong> deducted directly from gross salary, applied to the same base as income tax with no deductibility. The combined employee burden is 33.5% — more than double the advertised rate. The employer adds another 13% on top.</p>
+  </div>
+  <button class="replay-btn" data-target="hungary-section" title="Replay">↺</button>
+  <div id="hungary-input"></div>
+  <div class="viz-container" id="hungary-viz"></div>
+  <div id="hungary-summary"></div>
+  <div class="callout" id="hungary-callout"></div>
+  <div class="data-source">Sources: Hungarian National Tax Authority (NAV) 2025</div>
+  <div class="next-arrow" id="hungary-next"><a href="#france-divider">Continue ↓</a></div>
+</section>
+
+<!-- ═══════════════ France Divider ═══════════════ -->
+<div class="france-divider section visible" id="france-divider">
+  <div class="divider-text">The Worst Offender</div>
+</div>
+
+<!-- ═══════════════ [11] COUNTRY: France ═══════════════ -->
+<section class="section country-section" id="france-section">
+  <h2 class="section-header">France — Both Sides, Maximum Complexity</h2>
+  <div class="prose">
+    <p>France is the most instructive case study precisely because it combines both types of deception at maximum intensity. The income tax brackets — 0%, 11%, 30%, 41%, 45% — look reasonable for a developed economy. But French employees also pay approximately <strong>20–22% of gross salary</strong> in mandatory social contributions before income tax is even calculated. The income tax is then applied to a reduced base (most SSC is deductible), which masks the true burden. Then, on the employer side, French employers pay <strong>40–45% of gross salary</strong> in contributions — the highest employer burden of any country in this visualization.</p>
+    <p>To pay an employee €65,000, a French employer spends approximately €88,700.</p>
+  </div>
+  <button class="replay-btn" data-target="france-section" title="Replay">↺</button>
+  <div id="france-input"></div>
+  <div class="viz-container" id="france-viz"></div>
+  <div id="france-summary"></div>
+  <div class="callout" id="france-callout"></div>
+  <div class="annotation" id="france-annotation" style="display:none;"></div>
+  <div class="data-source">Sources: French URSSAF 2025, Service-Public.fr, PwC France Tax Summary</div>
+  <div class="next-arrow" id="france-next"><a href="#closing">Continue ↓</a></div>
+</section>
+
+<!-- ═══════════════ [12] CLOSING / SUMMARY ═══════════════ -->
+<section class="section" id="closing">
+  <h2 class="section-header">The Full Picture</h2>
+  <div class="summary-viz" id="summary-viz"></div>
+  <div class="prose">
+    <p>Tax brackets tell you one number. Employment in the modern economy involves many more. The countries shown here are not outliers — they represent the norm across the OECD. Understanding the full stack of mandatory deductions is essential to understanding what work actually pays, what hiring actually costs, and what your government actually collects.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="site-footer">
+  <p><strong>Data Sources:</strong> OECD Taxing Wages 2025, PwC Worldwide Tax Summaries, Canada Revenue Agency, Revenue.ie, Skatteverket, Estonian Tax and Customs Board, Hungarian NAV, French URSSAF/Service-Public.</p>
+  <p>Built for CSC316 — Data Visualization, University of Toronto, 2025.</p>
+</footer>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

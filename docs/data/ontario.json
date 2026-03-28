@@ -1,0 +1,127 @@
+{
+  "id": "ontario",
+  "name": "Ontario, Canada",
+  "currency": "CAD",
+  "year": 2025,
+  "typicalSweSalary": 140000,
+  "deceptionType": "employee_side",
+  "deceptionLabel": "The Ontario Surtax + Payroll Levies",
+
+  "layers": [
+    {
+      "id": "federal_income_tax",
+      "label": "Federal Income Tax",
+      "pass": 1,
+      "side": "employee",
+      "type": "brackets",
+      "brackets": [
+        { "upTo": 57375,  "rate": 0.145 },
+        { "upTo": 114750, "rate": 0.205 },
+        { "upTo": 177882, "rate": 0.26  },
+        { "upTo": 253414, "rate": 0.29  },
+        { "upTo": null,   "rate": 0.33  }
+      ]
+    },
+    {
+      "id": "ontario_income_tax",
+      "label": "Ontario Provincial Income Tax",
+      "pass": 1,
+      "side": "employee",
+      "type": "brackets",
+      "brackets": [
+        { "upTo": 51446,  "rate": 0.0505 },
+        { "upTo": 102894, "rate": 0.0915 },
+        { "upTo": 150000, "rate": 0.1116 },
+        { "upTo": 220000, "rate": 0.1216 },
+        { "upTo": null,   "rate": 0.1316 }
+      ]
+    },
+    {
+      "id": "federal_bpa",
+      "label": "Federal Basic Personal Amount",
+      "pass": 1,
+      "side": "employee",
+      "type": "nonrefundable_credit",
+      "exemptAmount": 16129,
+      "creditRate": 0.145,
+      "derivedCredit": 2338.71,
+      "clawbackStart": 177882,
+      "clawbackEnd": 253414,
+      "clawbackFloor": 14538,
+      "note": "Included in pass 1 — this is the 'reasonable-looking' pass"
+    },
+    {
+      "id": "ontario_bpa",
+      "label": "Ontario Basic Personal Amount",
+      "pass": 1,
+      "side": "employee",
+      "type": "nonrefundable_credit",
+      "exemptAmount": 12747,
+      "creditRate": 0.0505,
+      "derivedCredit": 643.72,
+      "note": "Included in pass 1"
+    },
+    {
+      "id": "ontario_surtax",
+      "label": "Ontario Surtax !!!",
+      "pass": 2,
+      "side": "employee",
+      "type": "surtax",
+      "appliesTo": "ontario_income_tax_before_credits",
+      "tiers": [
+        { "onProvincialTaxAbove": 5710, "rate": 0.20 },
+        { "onProvincialTaxAbove": 7307, "rate": 0.36 }
+      ],
+      "note": "The star of the show — applied on Ontario basic tax BEFORE credits. Pass 2 only."
+    },
+    {
+      "id": "cpp",
+      "label": "CPP (Canada Pension Plan)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_with_cap",
+      "rate": 0.0595,
+      "exemption": 3500,
+      "cap": 71300,
+      "maxContribution": 4034.10
+    },
+    {
+      "id": "cpp2",
+      "label": "CPP2 (Enhanced Pension Tier 2)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_band",
+      "rate": 0.04,
+      "bandFrom": 71300,
+      "bandTo": 81200,
+      "maxContribution": 396.00
+    },
+    {
+      "id": "ei",
+      "label": "Employment Insurance (EI)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_with_cap",
+      "rate": 0.0164,
+      "cap": 65700,
+      "maxContribution": 1077.48
+    },
+    {
+      "id": "ontario_health_premium",
+      "label": "Ontario Health Premium",
+      "pass": 2,
+      "side": "employee",
+      "type": "stepped",
+      "steps": [
+        { "incomeUpTo": 20000,  "premium": 0 },
+        { "incomeUpTo": 36000,  "formula": "min(300, 0.06 * (income - 20000))" },
+        { "incomeUpTo": 48000,  "formula": "300 + min(150, 0.06 * (income - 36000))" },
+        { "incomeUpTo": 72000,  "formula": "450 + min(150, 0.25 * (income - 48000))" },
+        { "incomeUpTo": 200000, "formula": "600 + min(150, 0.25 * (income - 72000))" },
+        { "incomeUpTo": null,   "formula": "750 + min(150, 0.25 * (income - 200000))" }
+      ],
+      "maxPremium": 900,
+      "note": "Often completely forgotten in 'headline' discussions"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "estonia",
+  "name": "Estonia",
+  "currency": "EUR",
+  "year": 2025,
+  "typicalSweSalary": 36000,
+  "deceptionType": "employer_side",
+  "deceptionLabel": "The 33.8% Uncapped Employer Contribution",
+  "note": "Marketed as a simple flat-tax haven — but employer cost tells a different story",
+
+  "layers": [
+    {
+      "id": "basic_exemption",
+      "label": "Basic Tax Exemption",
+      "pass": 1,
+      "side": "employee",
+      "type": "income_deduction_phaseout",
+      "fullAmount": 7848,
+      "phaseoutStart": 14400,
+      "phaseoutEnd": 25200,
+      "formula": "income <= 14400 ? 7848 : income >= 25200 ? 0 : 7848 - 7848 * ((income - 14400) / (25200 - 14400))",
+      "note": "Fully eliminated above €25,200 — most SWE salaries get zero benefit here!"
+    },
+    {
+      "id": "income_tax",
+      "label": "Personal Income Tax (Flat 22%)",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat_on_taxable",
+      "rate": 0.22,
+      "appliesTo": "income_minus_basic_exemption"
+    },
+    {
+      "id": "employee_unemployment",
+      "label": "Employee Unemployment Insurance",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat",
+      "rate": 0.016,
+      "cap": null,
+      "note": "Deducted from gross salary"
+    },
+    {
+      "id": "employee_pension_ii",
+      "label": "Mandatory Funded Pension (II Pillar)",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat",
+      "rate": 0.02,
+      "cap": null,
+      "voluntary": true,
+      "note": "2% default rate; voluntary since 2021 but most participate. Not shown in headline."
+    },
+    {
+      "id": "employer_social_tax",
+      "label": "Employer Social Tax 💀",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat",
+      "rate": 0.33,
+      "cap": null,
+      "appliesTo": "gross_salary",
+      "breakdown": [
+        { "label": "Pension insurance", "rate": 0.20 },
+        { "label": "Health insurance",  "rate": 0.13 }
+      ],
+      "note": "33% on every euro of gross salary, no cap whatsoever"
+    },
+    {
+      "id": "employer_unemployment",
+      "label": "Employer Unemployment Insurance",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat",
+      "rate": 0.008,
+      "cap": null,
+      "appliesTo": "gross_salary"
+    }
+  ],
+
+  "employerTotals": {
+    "totalRate": 0.338,
+    "cap": null,
+    "label": "Total employer cost: gross salary × 1.338"
+  }
+}

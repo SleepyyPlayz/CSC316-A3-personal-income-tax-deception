@@ -1,0 +1,486 @@
+/* style.css — Dark-mode, scroll-driven tax deception visualization */
+
+/* ─── Reset & Base ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --border: #2a2a2a;
+  --text: #f5f5f5;
+  --text-secondary: #888888;
+  --blue: #3b82f6;
+  --orange: #f97316;
+  --red: #ef4444;
+  --green: #22c55e;
+  --purple: #a855f7;
+  --yellow: #eab308;
+  --max-w: 900px;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: clamp(15px, 1.1vw, 17px);
+  overflow-x: hidden;
+}
+
+/* ─── Scroll progress ───────────────────────────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  z-index: 9999;
+  transition: width 60ms linear;
+}
+
+/* ─── Section base ──────────────────────────────────────────────── */
+.section {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 100px 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.section.full-width {
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ─── Hero ──────────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  opacity: 1;
+  transform: none;
+  padding: 40px 24px;
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  max-width: 800px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero .subtitle {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+.hero-bg canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.scroll-arrow {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounceArrow 2s ease-in-out infinite;
+  color: var(--text-secondary);
+  font-size: 28px;
+  cursor: pointer;
+}
+@keyframes bounceArrow {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+/* ─── Section headings ──────────────────────────────────────────── */
+.section-header {
+  font-size: clamp(22px, 3.5vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+.section-subheader {
+  font-size: clamp(14px, 1.2vw, 16px);
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+
+/* ─── Prose / narrative blocks ──────────────────────────────────── */
+.prose {
+  color: #cccccc;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.85;
+  max-width: 720px;
+}
+.prose strong, .prose b { color: var(--text); font-weight: 600; }
+.prose em { color: #ddd; }
+.prose p + p { margin-top: 1.2em; }
+
+/* ─── Intro animation section ──────────────────────────────────── */
+.concept-section {
+  position: relative;
+}
+.concept-section .sticky-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+.anim-step-text {
+  color: #bbbbbb;
+  font-size: 15px;
+  margin-top: 16px;
+  min-height: 48px;
+  transition: opacity 400ms ease;
+}
+
+/* ─── Replay button ─────────────────────────────────────────────── */
+.replay-btn {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 200ms, color 200ms;
+  z-index: 10;
+}
+.replay-btn:hover { background: #222; color: var(--text); }
+
+/* ─── Salary input ──────────────────────────────────────────────── */
+.salary-input-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 32px 0;
+}
+.salary-label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.currency-badge {
+  background: #1e1e1e;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-weight: 500;
+}
+.salary-field {
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 200ms;
+  min-width: 0;
+}
+.salary-field:focus { border-color: var(--blue); }
+
+.calc-btn {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 200ms, transform 100ms;
+  font-family: inherit;
+}
+.calc-btn:hover { background: #2563eb; }
+.calc-btn:active { transform: scale(0.97); }
+.calc-btn.loading {
+  background: #555;
+  pointer-events: none;
+}
+.calc-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.salary-presets {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.preset-pill {
+  background: #1e1e1e;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 200ms, color 200ms;
+  font-family: inherit;
+}
+.preset-pill:hover { background: #282828; color: var(--text); }
+
+/* ─── Viz container ─────────────────────────────────────────────── */
+.viz-container {
+  margin: 24px 0;
+  position: relative;
+  min-height: 100px;
+}
+.viz-container svg {
+  display: block;
+  overflow: visible;
+}
+
+/* ─── Summary table ─────────────────────────────────────────────── */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14px;
+}
+.summary-table th {
+  text-align: left;
+  padding: 10px 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+.summary-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #1a1a1a;
+}
+.summary-table .diff-col { color: var(--orange); font-weight: 600; }
+.summary-table .net-row td { color: var(--green); font-weight: 600; }
+
+/* ─── Callout box ───────────────────────────────────────────────── */
+.callout {
+  background: rgba(239, 68, 68, 0.08);
+  border-left: 3px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  margin: 24px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #ddd;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+.callout.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.callout strong { color: var(--text); }
+
+/* ─── Annotation ────────────────────────────────────────────────── */
+.annotation {
+  background: rgba(234, 179, 8, 0.08);
+  border-left: 3px solid var(--yellow);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* ─── Tooltip ───────────────────────────────────────────────────── */
+.tax-tooltip {
+  position: absolute;
+  background: #1a1a1a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  pointer-events: none;
+  z-index: 10000;
+  min-width: 180px;
+  max-width: 280px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  transition: opacity 150ms ease;
+}
+.tt-title {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.tt-row { color: var(--text-secondary); }
+.tt-row .tt-label { color: #999; }
+
+/* ─── Transition divider ───────────────────────────────────────── */
+.transition-section {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+.transition-section .prose {
+  max-width: 720px;
+}
+
+/* ─── France divider ────────────────────────────────────────────── */
+.france-divider {
+  text-align: center;
+  max-width: 100%;
+  padding: 60px 24px;
+  position: relative;
+  opacity: 1;
+  transform: none;
+}
+.france-divider::before {
+  content: '';
+  display: block;
+  width: 100%;
+  max-width: var(--max-w);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  margin: 0 auto 24px;
+}
+.france-divider .divider-text {
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 700;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* ─── Summary / closing ─────────────────────────────────────────── */
+.summary-viz {
+  margin: 40px 0;
+}
+.summary-viz svg { overflow: visible; }
+
+/* ─── Footer ────────────────────────────────────────────────────── */
+.site-footer {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: #555;
+  line-height: 1.8;
+}
+.site-footer a { color: #666; text-decoration: underline; }
+
+/* ─── Data sources inline ───────────────────────────────────────── */
+.data-source {
+  font-size: 11px;
+  color: #555;
+  margin-top: 16px;
+  font-style: italic;
+}
+
+/* ─── Country card wrapper ──────────────────────────────────────── */
+.country-section {
+  position: relative;
+}
+
+/* ─── Collapsible breakdown ─────────────────────────────────────── */
+.breakdown-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 16px;
+  font-family: inherit;
+  transition: color 200ms;
+}
+.breakdown-toggle:hover { color: var(--text); }
+.breakdown-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 400ms ease;
+}
+.breakdown-panel.open { max-height: 600px; }
+.breakdown-list {
+  padding: 12px 0;
+  list-style: none;
+}
+.breakdown-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ─── Next arrow ────────────────────────────────────────────────── */
+.next-arrow {
+  text-align: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.next-arrow.show { opacity: 1; }
+.next-arrow a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 200ms;
+}
+.next-arrow a:hover { color: var(--text); }
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .section { padding: 60px 16px; }
+  .input-row { flex-direction: column; }
+  .currency-badge { align-self: flex-start; }
+  .salary-field { width: 100%; }
+  .calc-btn { width: 100%; }
+  .summary-table { font-size: 12px; }
+  .summary-table th, .summary-table td { padding: 8px 8px; }
+}

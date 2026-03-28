@@ -1,0 +1,308 @@
+{
+  "id": "france",
+  "name": "France",
+  "currency": "EUR",
+  "year": 2025,
+  "typicalSweSalary": 65000,
+  "deceptionType": "both_sides",
+  "deceptionLabel": "The 20-22% Hidden Employee SSC + 36-40% Employer Contributions",
+  "note": "Headline income tax brackets look moderate (0/11/30/41/45%), but employee SSC adds ~20%, then employer pays another 36-40% on top of gross — all mostly uncapped.",
+
+  "constants": {
+    "PASS": 47100,
+    "PASS_monthly": 3925,
+    "SMIC_annual": 21622,
+    "SMIC_3_5x": 75677,
+    "PASS_4x": 188400,
+    "PASS_8x": 376800,
+    "professionalExpenseRate": 0.10,
+    "professionalExpenseCap": 14426
+  },
+
+  "layers": [
+
+    {
+      "id": "income_tax",
+      "label": "Income Tax (Impôt sur le Revenu)",
+      "pass": 1,
+      "side": "employee",
+      "type": "brackets",
+      "appliesTo": "taxable_income",
+      "taxableIncomeNote": "Pass 1 simplified base: gross * 0.90 (10% professional deduction), capped deduction at €14,426. Pass 2 base: gross - deductible SSC - professional deduction.",
+      "brackets": [
+        { "upTo": 11509,  "rate": 0.00 },
+        { "upTo": 29344,  "rate": 0.11 },
+        { "upTo": 83905,  "rate": 0.30 },
+        { "upTo": 180471, "rate": 0.41 },
+        { "upTo": null,   "rate": 0.45 }
+      ],
+      "pass1BaseFormula": "max(gross - 14426, gross * 0.90)",
+      "pass2BaseFormula": "gross - deductibleSSC - min(14426, (gross - deductibleSSC) * 0.10)"
+    },
+
+    {
+      "id": "pension_capped",
+      "label": "Old-Age Pension — Capped (Assurance Vieillesse Plafonnée)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_with_cap",
+      "rate": 0.069,
+      "cap": 47100,
+      "deductibleForIncomeTax": true,
+      "note": "6.9% only up to PASS (€47,100). Above that, stops — most impactful for mid salaries."
+    },
+
+    {
+      "id": "pension_uncapped",
+      "label": "Old-Age Pension — Uncapped (Assurance Vieillesse Déplafonnée)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat",
+      "rate": 0.004,
+      "cap": null,
+      "deductibleForIncomeTax": true,
+      "note": "0.4% on ALL salary, no ceiling whatsoever."
+    },
+
+    {
+      "id": "unemployment",
+      "label": "Unemployment Insurance (Assurance Chômage)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_with_cap",
+      "rate": 0.024,
+      "cap": 188400,
+      "deductibleForIncomeTax": true,
+      "note": "2.4% up to 4x PASS. Effectively uncapped for any realistic salary."
+    },
+
+    {
+      "id": "agirc_t1",
+      "label": "Supplementary Pension T1 — AGIRC-ARRCO",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_band",
+      "rate": 0.0315,
+      "bandFrom": 0,
+      "bandTo": 47100,
+      "deductibleForIncomeTax": true,
+      "note": "3.15% on salary up to PASS."
+    },
+
+    {
+      "id": "agirc_t2",
+      "label": "Supplementary Pension T2 — AGIRC-ARRCO",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_band",
+      "rate": 0.0864,
+      "bandFrom": 47100,
+      "bandTo": 376800,
+      "deductibleForIncomeTax": true,
+      "note": "8.64% on salary between PASS and 8x PASS. For a €65K salary this applies to ~€17,900."
+    },
+
+    {
+      "id": "ceg_t1",
+      "label": "General Equilibrium Contribution T1 (CEG)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_band",
+      "rate": 0.0086,
+      "bandFrom": 0,
+      "bandTo": 47100,
+      "deductibleForIncomeTax": true,
+      "note": "0.86% on salary up to PASS."
+    },
+
+    {
+      "id": "ceg_t2",
+      "label": "General Equilibrium Contribution T2 (CEG)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_band",
+      "rate": 0.0108,
+      "bandFrom": 47100,
+      "bandTo": 376800,
+      "deductibleForIncomeTax": true,
+      "note": "1.08% on salary between PASS and 8x PASS."
+    },
+
+    {
+      "id": "csg_deductible",
+      "label": "CSG — Deductible Portion",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_on_adjusted_base",
+      "rate": 0.068,
+      "baseMultiplier": 0.9825,
+      "baseCapMultiples": 4,
+      "baseCap": 188400,
+      "deductibleForIncomeTax": true,
+      "note": "6.8% x 98.25% of gross (up to 4x PASS, then 100% of gross above). This portion IS deductible from income tax — reduces your taxable base."
+    },
+
+    {
+      "id": "csg_nondeductible",
+      "label": "CSG — Non-Deductible Portion 😈",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_on_adjusted_base",
+      "rate": 0.024,
+      "baseMultiplier": 0.9825,
+      "baseCapMultiples": 4,
+      "baseCap": 188400,
+      "deductibleForIncomeTax": false,
+      "note": "2.4% x 98.25% of gross. NOT deductible — sits inside your income tax base. This is a key hidden layer."
+    },
+
+    {
+      "id": "crds",
+      "label": "Social Debt Repayment (CRDS) 😈",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat_on_adjusted_base",
+      "rate": 0.005,
+      "baseMultiplier": 0.9825,
+      "baseCapMultiples": 4,
+      "baseCap": 188400,
+      "deductibleForIncomeTax": false,
+      "note": "0.5% x 98.25% of gross. Also NOT deductible for income tax."
+    },
+
+    {
+      "id": "employer_health",
+      "label": "Health Insurance — Employer (Assurance Maladie) 💀",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat",
+      "rate": 0.13,
+      "cap": null,
+      "note": "~13% on ALL salary, no cap. Largest single employer contribution. Reduced to ~7% for very low salaries only."
+    },
+
+    {
+      "id": "employer_pension_t1",
+      "label": "Employer Pension T1 (Assurance Vieillesse Plafonnée)",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat_with_cap",
+      "rate": 0.0855,
+      "cap": 47100,
+      "note": "8.55% up to PASS ceiling."
+    },
+
+    {
+      "id": "employer_pension_overflow",
+      "label": "Employer Pension Overflow (Assurance Vieillesse Déplafonnée)",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat_above_threshold",
+      "rate": 0.0202,
+      "threshold": 47100,
+      "cap": null,
+      "note": "2.02% on ALL salary above PASS — no upper cap. Pension contributions never fully stop."
+    },
+
+    {
+      "id": "employer_family",
+      "label": "Family Allowances (Allocations Familiales)",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "tiered_on_salary",
+      "tiers": [
+        { "upTo": 75677, "rate": 0.0345, "label": "3.45% up to 3.5x SMIC" },
+        { "upTo": null,  "rate": 0.0525, "label": "5.25% above 3.5x SMIC — on TOTAL salary" }
+      ],
+      "cap": null,
+      "note": "Jumps from 3.45% to 5.25% once salary crosses 3.5x SMIC (~€75,677) AND applies retroactively to full salary — creates a small cliff effect."
+    },
+
+    {
+      "id": "employer_unemployment",
+      "label": "Unemployment Insurance — Employer",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat_with_cap",
+      "rate": 0.0405,
+      "cap": 188400,
+      "note": "4.05% up to 4x PASS. Blended ~4.025% for 2025 (4.05% Jan-Apr, 4.00% May-Dec)."
+    },
+
+    {
+      "id": "employer_agirc_t1",
+      "label": "AGIRC-ARRCO Supplementary Pension T1 — Employer",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat_band",
+      "rate": 0.0472,
+      "bandFrom": 0,
+      "bandTo": 47100,
+      "note": "4.72% up to PASS."
+    },
+
+    {
+      "id": "employer_agirc_t2",
+      "label": "AGIRC-ARRCO Supplementary Pension T2 — Employer",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat_band",
+      "rate": 0.1295,
+      "bandFrom": 47100,
+      "bandTo": 376800,
+      "note": "12.95% from PASS to 8x PASS. Largest single tier rate of any employer contribution."
+    },
+
+    {
+      "id": "employer_ceg_t1",
+      "label": "CEG General Equilibrium T1 — Employer",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat_band",
+      "rate": 0.0086,
+      "bandFrom": 0,
+      "bandTo": 47100
+    },
+
+    {
+      "id": "employer_ceg_t2",
+      "label": "CEG General Equilibrium T2 — Employer",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat_band",
+      "rate": 0.0108,
+      "bandFrom": 47100,
+      "bandTo": 376800
+    },
+
+    {
+      "id": "employer_work_accident",
+      "label": "Work Accident & Occupational Disease Insurance",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat",
+      "rate": 0.0077,
+      "cap": null,
+      "note": "~0.77% average for office/tech. Sector-variable — set annually per company risk profile. Cannot be modeled exactly without sector."
+    },
+
+    {
+      "id": "employer_ags",
+      "label": "Wage Guarantee Fund (AGS)",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat",
+      "rate": 0.0025,
+      "cap": null,
+      "note": "0.25% on all salary. Guarantees wages if company becomes insolvent."
+    }
+  ],
+
+  "calculationNotes": {
+    "incometaxBase_pass1": "gross - min(gross * 0.10, 14426)",
+    "incometaxBase_pass2": "gross - deductibleSSC - min((gross - deductibleSSC) * 0.10, 14426)",
+    "deductibleSSC": "pension_capped + pension_uncapped + unemployment + agirc_t1 + agirc_t2 + ceg_t1 + ceg_t2 + csg_deductible",
+    "nonDeductibleSSC_stays_in_taxableBase": "csg_nondeductible + crds",
+    "importantEffect": "Moving from pass1 to pass2: income tax DECREASES (larger deductions reduce taxable base) but total burden INCREASES significantly due to SSC. This is a key visual moment."
+  }
+}

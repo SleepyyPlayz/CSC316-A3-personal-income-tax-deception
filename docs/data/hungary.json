@@ -1,0 +1,56 @@
+{
+  "id": "hungary",
+  "name": "Hungary",
+  "currency": "HUF",
+  "year": 2025,
+  "typicalSweSalary": 1200000,
+  "deceptionType": "employer_side",
+  "deceptionLabel": "The Hidden 18.5% Employee SSC + 13% Employer Contribution",
+  "note": "Advertised as a simple 15% flat tax — but total labour cost is 46.5% above net pay",
+
+  "layers": [
+    {
+      "id": "income_tax",
+      "label": "Personal Income Tax (Flat 15%)",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat",
+      "rate": 0.15,
+      "appliesTo": "gross_salary",
+      "note": "No brackets, no basic exemption for general adult workers"
+    },
+    {
+      "id": "employee_ssc",
+      "label": "Employee Social Security Contribution (non-deductible !!!)",
+      "pass": 1,
+      "side": "employee",
+      "type": "flat",
+      "rate": 0.185,
+      "appliesTo": "gross_salary",
+      "breakdown": [
+        { "label": "Pension contribution",      "rate": 0.10 },
+        { "label": "Healthcare contribution",   "rate": 0.04 },
+        { "label": "Unemployment insurance",    "rate": 0.03 },
+        { "label": "Work accident insurance",   "rate": 0.015 }
+      ],
+      "note": "On payslip but rarely mentioned in 'flat 15% tax' headlines — employee keeps only 66.5% of gross!"
+    },
+    {
+      "id": "employer_social_contribution",
+      "label": "Employer Social Contribution Tax (!!!)",
+      "pass": "employer_reveal",
+      "side": "employer",
+      "type": "flat",
+      "rate": 0.13,
+      "cap": null,
+      "appliesTo": "gross_salary",
+      "note": "13% on top of gross salary, very high contribution cap (24 times the monthly minimum wage of 6,979,200 HUF)"
+    }
+  ],
+
+  "employerTotals": {
+    "totalRate": 0.13,
+    "cap": null,
+    "label": "Total employer cost: gross salary * 1.13"
+  }
+}

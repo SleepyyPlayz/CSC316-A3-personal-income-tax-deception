@@ -1,0 +1,92 @@
+{
+  "id": "ireland",
+  "name": "Ireland",
+  "currency": "EUR",
+  "year": 2025,
+  "typicalSweSalary": 85000,
+  "deceptionType": "employee_side",
+  "deceptionLabel": "The USC 'Surcharge' That Isn't Really a Surcharge",
+  "note": "Headline is a clean 20/40% system with credits — but USC is a fully separate parallel tax that credits don't touch",
+
+  "layers": [
+    {
+      "id": "income_tax",
+      "label": "Income Tax (PAYE)",
+      "pass": 1,
+      "side": "employee",
+      "type": "brackets",
+      "brackets": [
+        { "upTo": 44000, "rate": 0.20 },
+        { "upTo": null,  "rate": 0.40 }
+      ],
+      "note": "Standard rate cut-off €44,000 for single person"
+    },
+    {
+      "id": "personal_tax_credit",
+      "label": "Personal Tax Credit",
+      "pass": 1,
+      "side": "employee",
+      "type": "nonrefundable_credit",
+      "creditAmount": 2000,
+      "appliesAgainst": "income_tax_only",
+      "note": "Fixed credit — same value regardless of tax rate"
+    },
+    {
+      "id": "employee_tax_credit",
+      "label": "Employee (PAYE) Tax Credit",
+      "pass": 1,
+      "side": "employee",
+      "type": "nonrefundable_credit",
+      "creditAmount": 2000,
+      "appliesAgainst": "income_tax_only",
+      "note": "Combined with personal credit = €4,000 total. DOES NOT reduce USC."
+    },
+    {
+      "id": "usc",
+      "label": "Universal Social Charge (USC) (!!!)",
+      "pass": 2,
+      "side": "employee",
+      "type": "brackets",
+      "exemptIfBelow": 13000,
+      "appliesTo": "gross_income",
+      "brackets": [
+        { "upTo": 12012, "rate": 0.005 },
+        { "upTo": 27382, "rate": 0.02  },
+        { "upTo": 70044, "rate": 0.03  },
+        { "upTo": null,  "rate": 0.08  }
+      ],
+      "creditsApply": false,
+      "note": "Completely separate from income tax. Tax credits give ZERO relief here. This is the deception — it looks like a minor 'charge' but at higher salaries the 8% band is brutal."
+    },
+    {
+      "id": "prsi",
+      "label": "PRSI (Pay Related Social Insurance)",
+      "pass": 2,
+      "side": "employee",
+      "type": "flat",
+      "rate": 0.042,
+      "exemptWeeklyBelow": 352,
+      "appliesTo": "gross_income",
+      "note": "4.1% Jan-Sep 2025, 4.2% Oct-Dec 2025. Using blended effective rate of ~4.175% but 4.2% for simplicity. Flat on ALL income — no cap, no upper limit."
+    }
+  ],
+
+  "taxReductions": [
+    {
+      "id": "personal_tax_credit",
+      "label": "Personal Tax Credit",
+      "type": "nonrefundable_credit",
+      "creditAmount": 2000,
+      "scope": "income_tax_only",
+      "note": "pass 1 — included in headline calc"
+    },
+    {
+      "id": "employee_tax_credit",
+      "label": "Employee Tax Credit",
+      "type": "nonrefundable_credit",
+      "creditAmount": 2000,
+      "scope": "income_tax_only",
+      "note": "pass 1 — included in headline calc"
+    }
+  ]
+}
