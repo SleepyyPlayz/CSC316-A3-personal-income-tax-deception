@@ -474,6 +474,155 @@ body {
 }
 .next-arrow a:hover { color: var(--text); }
 
+/* ─── Waterfall chart container ─────────────────────────────────── */
+.waterfall-container {
+  margin: 24px 0 0;
+  position: relative;
+  min-height: 80px;
+}
+.waterfall-container svg {
+  display: block;
+  overflow: visible;
+}
+
+/* ─── Stepper panel ────────────────────────────────────────────── */
+.stepper-container {
+  margin: 0 0 16px;
+}
+.stepper-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.stepper-header {
+  margin-bottom: 12px;
+}
+.stepper-step-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Dot progress */
+.stepper-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.stepper-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  transition: background 300ms ease, transform 200ms ease;
+}
+.stepper-dot.dot-employer { border: 1px solid #ef444466; }
+.stepper-dot.dot-employee { border: 1px solid #3b82f666; }
+.stepper-dot.active.dot-employer { background: var(--red); border-color: var(--red); }
+.stepper-dot.active.dot-employee { background: var(--blue); border-color: var(--blue); }
+.stepper-dot.current { transform: scale(1.3); }
+
+/* Explanation */
+.stepper-explanation {
+  min-height: 80px;
+  transition: opacity 150ms ease;
+}
+.stepper-explanation.fading { opacity: 0.3; }
+.stepper-explanation .step-desc {
+  color: #cccccc;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.stepper-explanation .step-tech {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+  border-left: 2px solid var(--border);
+  padding-left: 12px;
+}
+.stepper-explanation .step-tech strong {
+  color: var(--orange);
+  font-weight: 600;
+}
+.stepper-explanation .step-prompt {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* Stats row */
+.stepper-stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+  font-size: 14px;
+}
+.stepper-stats .stat-amount { color: var(--text-secondary); }
+.stepper-stats .stat-running { color: var(--text-secondary); }
+.stepper-stats .stat-net { color: var(--green); }
+.stepper-stats .stat-gross { color: var(--green); }
+.stepper-stats strong { color: var(--text); font-weight: 600; }
+
+/* Nav buttons */
+.stepper-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.stepper-btn {
+  background: #1e1e1e;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 18px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 200ms, color 200ms;
+  font-family: inherit;
+}
+.stepper-btn:hover:not(:disabled) { background: #282828; color: var(--text); }
+.stepper-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.stepper-btn.stepper-play {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.stepper-btn.stepper-play:hover { background: #2563eb; }
+
+/* ─── Comparison container (headline vs reality) ───────────────── */
+.comparison-container {
+  margin: 32px 0;
+}
+.comparison-container h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.comparison-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.comparison-label em { color: var(--text); font-style: normal; font-weight: 600; }
+.comparison-chart-wrap {
+  margin-bottom: 20px;
+}
+.comparison-callout {
+  background: rgba(239, 68, 68, 0.08);
+  border-left: 3px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #ddd;
+}
+.comparison-callout strong { color: var(--text); }
+
 /* ─── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .section { padding: 60px 16px; }
