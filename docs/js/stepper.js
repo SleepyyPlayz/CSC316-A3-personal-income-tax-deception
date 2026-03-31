@@ -30,6 +30,7 @@ export class Stepper {
     this.totalEmployer = options.totalEmployer || 0;
     this.tooltip = options.tooltip || null;
     this.onComplete = options.onComplete || null;
+    this.onReset = options.onReset || null;
 
     this.currentStep = -1; // nothing shown yet
     this.chart = null;
@@ -54,6 +55,7 @@ export class Stepper {
           <button class="stepper-btn stepper-prev" disabled>← Prev</button>
           <button class="stepper-btn stepper-play">▶ Autoplay</button>
           <button class="stepper-btn stepper-next">Next →</button>
+          <button class="stepper-btn stepper-reset">↺ Reset</button>
         </div>
       </div>
     `;
@@ -66,6 +68,7 @@ export class Stepper {
       prevBtn: this.panelContainer.querySelector('.stepper-prev'),
       playBtn: this.panelContainer.querySelector('.stepper-play'),
       nextBtn: this.panelContainer.querySelector('.stepper-next'),
+      resetBtn: this.panelContainer.querySelector('.stepper-reset'),
     };
 
     // Build dots
@@ -81,6 +84,10 @@ export class Stepper {
       this.next();
     });
     this.els.playBtn.addEventListener('click', () => this.toggleAutoplay());
+    this.els.resetBtn.addEventListener('click', () => {
+      this.stopAutoplay();
+      if (this.onReset) this.onReset();
+    });
 
     // Initial panel state
     this._updatePanel();
@@ -129,18 +136,6 @@ export class Stepper {
     this.currentStep++;
     this._applyStep(this.currentStep);
     this._updatePanel();
-
-    // Auto-scroll chart into view
-    const row = this.chart.rows[this.chart.rows.length - 1];
-    if (row && row.grp) {
-      const node = row.grp.node();
-      if (node && node.getBoundingClientRect) {
-        const rect = node.getBoundingClientRect();
-        if (rect.bottom > window.innerHeight) {
-          node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-    }
 
     if (this.currentStep === this.steps.length - 1) {
       this.stopAutoplay();

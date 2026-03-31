@@ -18,6 +18,7 @@ let tooltip;
 let scrollCtrl;
 const calculators = {};
 const steppers = {};
+const salaryInputs = {};
 
 // ─── Helpers ───────────────────────────────────────────────────────
 function fmt(v, currency = '') {
@@ -102,12 +103,20 @@ function currSym(currency) {
 
 // ─── Generic country stepper launcher ──────────────────────────────
 function launchStepper(countryId, salary) {
+  try { return _launchStepperInner(countryId, salary); }
+  catch (e) { console.error('launchStepper error:', e); throw e; }
+}
+
+function _launchStepperInner(countryId, salary) {
+  console.log('[stepper] launch', countryId, salary);
   const calc = calculators[countryId];
   const data = taxData[countryId];
   const sym = currSym(data.currency);
 
   // Generate steps
+  console.log('[stepper] generating steps...');
   const steps = calc.generateSteps(salary);
+  console.log('[stepper] steps generated:', steps.length);
 
   // Calculate total employer for chart scale
   let totalEmployer = 0;
@@ -120,23 +129,65 @@ function launchStepper(countryId, salary) {
     steppers[countryId].destroy();
   }
 
-  // Clear containers
+  const inputEl = document.getElementById(`${countryId}-input`);
   const chartEl = document.getElementById(`${countryId}-chart`);
-  const panelEl = document.getElementById(`${countryId}-panel`);
   const compEl = document.getElementById(`${countryId}-comparison`);
+  console.log('[stepper] DOM elements:', { inputEl: !!inputEl, chartEl: !!chartEl, compEl: !!compEl });
+
+  // Hide the salary-input-wrap, use the input container for the stepper panel
+  const salaryWrap = inputEl.querySelector('.salary-input-wrap');
+  if (salaryWrap) salaryWrap.style.display = 'none';
+
+  // Create a panel wrapper inside inputEl for the stepper
+  let panelWrap = inputEl.querySelector('.stepper-panel-wrap');
+  if (!panelWrap) {
+    panelWrap = document.createElement('div');
+    panelWrap.className = 'stepper-panel-wrap';
+    inputEl.appendChild(panelWrap);
+  }
+  panelWrap.innerHTML = '';
+  panelWrap.style.display = '';
+
   chartEl.innerHTML = '';
   compEl.innerHTML = '';
 
-  const stepper = new Stepper(chartEl, panelEl, {
+  console.log('[stepper] creating Stepper instance...');
+  const stepper = new Stepper(chartEl, panelWrap, {
     steps,
     currency: sym,
     gross: salary,
     totalEmployer,
     tooltip,
     onComplete: () => showComparison(countryId, salary, sym),
+    onReset: () => resetStepper(countryId),
   });
   steppers[countryId] = stepper;
+  console.log('[stepper] calling start()...');
   stepper.start();
+  console.log('[stepper] done');
+}
+
+// ─── Reset: restore salary input, clear chart ──────────────────────
+function resetStepper(countryId) {
+  if (steppers[countryId]) {
+    steppers[countryId].destroy();
+    steppers[countryId] = null;
+  }
+
+  const inputEl = document.getElementById(`${countryId}-input`);
+  const chartEl = document.getElementById(`${countryId}-chart`);
+  const compEl = document.getElementById(`${countryId}-comparison`);
+
+  // Hide the stepper panel wrapper
+  const panelWrap = inputEl.querySelector('.stepper-panel-wrap');
+  if (panelWrap) panelWrap.style.display = 'none';
+
+  // Restore salary input
+  const salaryWrap = inputEl.querySelector('.salary-input-wrap');
+  if (salaryWrap) salaryWrap.style.display = '';
+
+  chartEl.innerHTML = '';
+  compEl.innerHTML = '';
 }
 
 // ─── Comparison (headline vs reality) after stepper completes ──────
@@ -171,8 +222,8 @@ function showComparison(countryId, salary, sym) {
 // ─── Country initializers ──────────────────────────────────────────
 
 function initOntario() {
-  new SalaryInput('#ontario-input', {
-    currency: 'CAD', flag: '🇨🇦', defaultValue: 120000,
+  salaryInputs.ontario = new SalaryInput('#ontario-input', {
+    currency: 'CAD', flag: '🇨🇦', defaultValue: 120000, minValue: 10000,
     presets: [
       { label: 'Median', value: 65000 },
       { label: 'Average SWE', value: 120000 },
@@ -183,8 +234,8 @@ function initOntario() {
 }
 
 function initIreland() {
-  new SalaryInput('#ireland-input', {
-    currency: 'EUR', flag: '🇮🇪', defaultValue: 85000,
+  salaryInputs.ireland = new SalaryInput('#ireland-input', {
+    currency: 'EUR', flag: '🇮🇪', defaultValue: 85000, minValue: 10000,
     presets: [
       { label: 'Median', value: 44000 },
       { label: 'Average SWE', value: 85000 },
@@ -195,8 +246,8 @@ function initIreland() {
 }
 
 function initSweden() {
-  new SalaryInput('#sweden-input', {
-    currency: 'SEK', flag: '🇸🇪', defaultValue: 780000,
+  salaryInputs.sweden = new SalaryInput('#sweden-input', {
+    currency: 'SEK', flag: '🇸🇪', defaultValue: 780000, minValue: 100000,
     presets: [
       { label: 'Median', value: 420000 },
       { label: 'Typical SWE', value: 780000 },
@@ -207,8 +258,8 @@ function initSweden() {
 }
 
 function initEstonia() {
-  new SalaryInput('#estonia-input', {
-    currency: 'EUR', flag: '🇪🇪', defaultValue: 36000,
+  salaryInputs.estonia = new SalaryInput('#estonia-input', {
+    currency: 'EUR', flag: '🇪🇪', defaultValue: 36000, minValue: 10000,
     presets: [
       { label: 'Median', value: 22000 },
       { label: 'Typical SWE', value: 36000 },
@@ -219,8 +270,8 @@ function initEstonia() {
 }
 
 function initHungary() {
-  new SalaryInput('#hungary-input', {
-    currency: 'HUF', flag: '🇭🇺', defaultValue: 1200000,
+  salaryInputs.hungary = new SalaryInput('#hungary-input', {
+    currency: 'HUF', flag: '🇭🇺', defaultValue: 1200000, minValue: 1000000,
     presets: [
       { label: 'Median', value: 600000 },
       { label: 'Typical SWE', value: 1200000 },
@@ -231,8 +282,8 @@ function initHungary() {
 }
 
 function initFrance() {
-  new SalaryInput('#france-input', {
-    currency: 'EUR', flag: '🇫🇷', defaultValue: 65000,
+  salaryInputs.france = new SalaryInput('#france-input', {
+    currency: 'EUR', flag: '🇫🇷', defaultValue: 65000, minValue: 10000,
     presets: [
       { label: 'SMIC (min)', value: 21622 },
       { label: 'Typical SWE', value: 65000 },
